@@ -64,14 +64,18 @@ defmodule Test do
     end
   end
 
-  # Returns a list where all elements are duplicated
-  def duplicate(n, list) do
+  # Sorts a list of elements through insertion sort
+  def isort(list) do
+    isort(list, []])
+  end
+
+  def isort(list, sorted) do
     [head | tail] = list
-    case n do
-      0 ->
-        head
-      _ ->
-        nth(n - 1, tail)
+    case  do
+    [] ->
+    ...
+    [head | tail] ->
+    ...
     end
   end
 end
