@@ -1,6 +1,6 @@
 defmodule Derivate do
 
-  def test() do
+  def multiplication() do
     e = {:add,
           {:mul, {:num, 5},{:var, :x}},
           {:num,4}}
@@ -12,10 +12,10 @@ defmodule Derivate do
     IO.write("Calculated: #{print(simplify(c))}\n")
   end
 
-  def test2() do
+  def exponent() do
     e = {:add,
-          {:exp, {:var, :x},{:num, 3}},
-          {:num,5}}
+          {:exp, {:var, :x}, {:num, 3}},
+          {:num, 5}}
     d = deriv(e, :x)
     c = calc(d, :x, 4)
     IO.write("Expression: #{print(e)}\n")
@@ -24,8 +24,18 @@ defmodule Derivate do
     IO.write("Calculated: #{print(simplify(c))}\n")
   end
 
-  def test3() do
-    e = {:exp, {:var, :x},{:num, 1/2}}
+  def sqrt() do
+    e = {:sqrt, {:var, :x}}
+    d = deriv(e, :x)
+    c = calc(d, :x, 4)
+    IO.write("Expression: #{print(e)}\n")
+    IO.write("Derivative: #{print(d)}\n")
+    IO.write("Simplified: #{print(simplify(d))}\n")
+    IO.write("Calculated: #{print(simplify(c))}\n")
+  end
+
+  def lnx() do
+    e = {:sqrt, {:var, :x}}
     d = deriv(e, :x)
     c = calc(d, :x, 4)
     IO.write("Expression: #{print(e)}\n")
@@ -50,6 +60,9 @@ defmodule Derivate do
     {:mul,
       {:mul, {:num, n}, {:exp, e, {:num, n-1}}},
       deriv(e,v)}
+  end
+  def deriv({:sqrt, e}, v) do
+    deriv({:exp, e, {:num, 1/2}}, v)
   end
 
   def calc( {:num, n}, _, _) do {:num, n} end
@@ -101,4 +114,5 @@ defmodule Derivate do
   def print({:add, e1, e2}) do "(#{print(e1)} + #{print(e2)})" end
   def print({:mul, e1, e2}) do "#{print(e1)} * #{print(e2)}" end
   def print({:exp, e1, e2}) do "#{print(e1)}^#{print(e2)}" end
+  def print({:sqrt, e}) do "Sqrt(#{print(e)})" end
 end
