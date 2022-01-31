@@ -35,15 +35,15 @@ defmodule Bench do
     list = [] 
   end
   
-  def list_insert(e, list) do
+  def list_insert(insert_val, list) do
     case list do
       [] ->
-        [e]
-      [h | t] ->
-        if e < h do
-          [e | list]
+        [insert_val]
+      [head | tail] ->
+        if insert_val < h do
+          [insert_val | list]
         else
-          [h | list_insert(e, t)]
+          [head | list_insert(insert_val, tail)]
         end
     end
   end
@@ -53,24 +53,24 @@ defmodule Bench do
   end
   
   def tree_insert(insert_val, :nil) do
-      {:leaf, insert_val}
-    end
+    {:leaf, insert_val}
+  end
 
-    def tree_insert(insert_val, {:leaf, val}) do
-      cond do
-        insert_val >= val -> {:node, val, :nil, {:leaf, insert_val}}
-        insert_val <= val -> {:node, val, {:leaf, insert_val}, :nil}
-      end
+  def tree_insert(insert_val, {:leaf, val}) do
+    cond do
+      insert_val >= val -> {:node, val, :nil, {:leaf, insert_val}}
+      insert_val <= val -> {:node, val, {:leaf, insert_val}, :nil}
     end
+  end
 
-    def tree_insert(insert_val, {:node, :nil}) do
-      {:node, insert_val, :nil, :nil}
-    end
+  def tree_insert(insert_val, {:node, :nil}) do
+    {:node, insert_val, :nil, :nil}
+  end
 
-    def tree_insert(insert_val, {:node, val, left, right}) do
-      cond do
-        insert_val >= val -> {:node, val, left, tree_insert(insert_val, right)}
-        insert_val <= val -> {:node, val, tree_insert(insert_val, left), right}
-      end
+  def tree_insert(insert_val, {:node, val, left, right}) do
+    cond do
+      insert_val >= val -> {:node, val, left, tree_insert(insert_val, right)}
+      insert_val <= val -> {:node, val, tree_insert(insert_val, left), right}
     end
+  end
 end

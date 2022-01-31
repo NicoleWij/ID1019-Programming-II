@@ -45,7 +45,7 @@ defmodule Derivate do
   end
 
   def lnx() do
-    e = {:ln, {:var, :x}}
+    e = {:ln, {:mul, {:num, 2},{:var, :x}}}
     d = deriv(e, :x)
     c = calc(d, :x, 2)
     IO.write("Expression: #{print(e)}\n")
@@ -89,7 +89,10 @@ defmodule Derivate do
     deriv({:exp, e, {:num, 1/2}}, v)
   end
   def deriv({:ln, e}, v) do
-    {:div, {:num, 1}, e}
+    {:div,
+      deriv(e, v),
+      e
+    }
   end
   def deriv({:sin, e}, v) do
     {:mul, {:cos, e}, deriv(e, v)}
