@@ -12,10 +12,10 @@ defmodule Test do
   # Defines a multiplication of m and n using only addition
   def product_case(m, n) do
     case m do
-    0 ->
-      m
-    _ ->
-      n + product_case(m-1, n)
+      0 ->
+        m
+      _ ->
+        n + product_case(m-1, n)
     end
   end
 
