@@ -16,8 +16,8 @@ defmodule Test do
         {:label, :loop},
         {:addi, 6, 0, 2},     # $6 <- 0 + 2 = 2
         {:addi, 5, 5, 1},     # $5 <- 1 + 1 = 2
-        {:out, 5},
-        {:out, 6},
+        #{:out, 5},
+        #{:out, 6},
         {:sw, 2, 0, 8},
         {:lw, 2, 0, 8},
         {:beq, 5, 6, :loop},
@@ -59,7 +59,15 @@ defmodule Out do
 
   def put(out, s) do [s | out] end
 
-  def close(out) do Enum.reverse(out) end
+  def close(out) do
+    case out do
+      [] -> :ok
+
+      [h | t] ->
+      close(t)
+      IO.write("#{h}")
+    end
+  end
 end
 
 
@@ -76,7 +84,7 @@ defmodule Register do
   end
 
   def read(reg, i) do
-    IO.write("read from index: #{i}\n")
+    # IO.write("read from index: #{i}\n")
     elem(reg, i)
   end
 
@@ -148,19 +156,24 @@ defmodule Emulator do
 
       {:out, rs} ->
         pc = pc + 4
+        IO.write("pc: #{pc}\n")
         s = Register.read(reg, rs)
         out = Out.put(out, s)
         run(pc, code, reg, mem, out)
 
       {:add, rd, rs, rt} ->
         pc = pc + 4
+        IO.write("pc: #{pc}")
         s = Register.read(reg, rs)
         t = Register.read(reg, rt)
         reg = Register.write(reg, rd, s + t)
+        IO.write(" $#{rd} = $#{elem(reg,rd)}\n")
         run(pc, code, reg, mem, out)
 
       {:sub, rd, rs, rt} ->
         pc = pc + 4
+        IO.write("pc: #{pc}")
+        IO.write(" $#{rd} = $#{rs - rt}\n")
         s = Register.read(reg, rs)
         t = Register.read(reg, rt)
         reg = Register.write(reg, rd, s - t)
@@ -168,19 +181,24 @@ defmodule Emulator do
 
       {:addi, rd, rt, imm} ->
         pc = pc + 4
+        IO.write("pc: #{pc}")
         t = Register.read(reg, rt)
         reg = Register.write(reg, rd, t + imm)
-        IO.write("code1: #{elem(reg,rd)}\n")
+        IO.write(" $#{rd} = $#{elem(reg,rd)}\n")
         run(pc, code, reg, mem, out)
 
       {:lw, rd, rt, offset} ->
         pc = pc + 4
+        IO.write("pc: #{pc}")
+        IO.write(" $#{rd} = $#{rt + offset}\n")
         t = Program.read_word(mem, offset + rt)
         reg = Register.write(reg, rd, t)
         run(pc, code, reg, mem, out)
 
       {:sw, rs, rt, offset} ->
         pc = pc + 4
+        IO.write("pc: #{pc}")
+        IO.write(" 0x#{pc} = $#{rt}\n")
         s = Register.read(reg, rs)
         mem = Program.write_word(mem, rt + offset, s)
         run(pc, code, reg, mem, out)
@@ -191,11 +209,15 @@ defmodule Emulator do
 
         if s == t do
           pc = offset
-          out = Out.put(out, "Branch to = #{pc + offset}\n")
+          IO.write("pc: #{pc}")
+          IO.write(" branch to = #{pc + offset}\n")
+          #out = Out.put(out, " branch to = #{pc + offset}\n")
           run(pc, code, reg, mem, out)
         else
           pc = pc + 4
-          out = Out.put(out, "\n")
+          IO.write("pc: #{pc}")
+          IO.write(" branch to = #{pc + offset}\n")
+          #out = Out.put(out, " branch to = #{pc + offset}\n")
           run(pc, code, reg, mem, out)
         end
 
