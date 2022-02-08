@@ -17,10 +17,10 @@ defmodule Bench do
 
       tree = fn (seq) ->
         List.foldr(seq, tree_new(), fn (e, acc) -> tree_insert(e, acc) end)
-      end      
+      end
 
-      tl = time.(i, list) 
-      tt = time.(i, tree)     
+      tl = time.(i, list)
+      tt = time.(i, tree)
 
       IO.write("  #{tl}\t\t\t#{tt}\n")
     end
@@ -30,28 +30,29 @@ defmodule Bench do
 
     :ok
   end
-  
-  def list_new() do 
-    list = [] 
+
+  def list_new() do
+    list = []
   end
-  
+
   def list_insert(insert_val, list) do
+    # [ head | tail ] = list
     case list do
       [] ->
         [insert_val]
       [head | tail] ->
-        if insert_val < h do
+        if insert_val < head do
           [insert_val | list]
         else
           [head | list_insert(insert_val, tail)]
         end
     end
   end
-  
-  def tree_new() do  
+
+  def tree_new() do
     {:node, :nil}
   end
-  
+
   def tree_insert(insert_val, :nil) do
     {:leaf, insert_val}
   end

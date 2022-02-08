@@ -10,16 +10,14 @@ defmodule Test do
   def demo() do
     {
       {
-        {:addi, 1, 1, 5},     # $1 <- 1 + 5 = 5
-        {:add, 4, 2, 1},      # $4 <- $2 + $1
-        {:addi, 5, 0, 1},     # $5 <- 0 + 1 = 1
+        {:addi, 1, 1, 5},
+        {:add, 4, 2, 1},
+        {:sw, 1, 0, 8},
+        {:lw, 5, 0, 8},
+        {:addi, 5, 0, 1},
         {:label, :loop},
-        {:addi, 6, 0, 2},     # $6 <- 0 + 2 = 2
-        {:addi, 5, 5, 1},     # $5 <- 1 + 1 = 2
-        #{:out, 5},
-        #{:out, 6},
-        {:sw, 2, 0, 8},
-        {:lw, 2, 0, 8},
+        {:addi, 6, 0, 2},
+        {:addi, 5, 5, 1},
         {:beq, 5, 6, :loop},
         {:halt}
       },
@@ -31,7 +29,6 @@ end
 
 
 defmodule Program do
-
   def load(prgm) do
     {code, data} = prgm
   end
@@ -224,7 +221,7 @@ defmodule Emulator do
       {:label, label} ->
         out = Out.put(out, "#{label}\n")
         pc = pc + 4
-        code = replace_labels(code, pc, pc, label)
+        code = replace(code, pc, pc, label)
         run(pc, code, reg, mem, out)
 
     end
@@ -245,24 +242,22 @@ defmodule Emulator do
     end
   end
 
-  def replace_labels(code, start_pc, pc, label) do
+  def replace(code, start_pc, pc, label) do
     # IO.write("replace pc = #{start_pc}\n")
     next = Program.read_instruction(code, start_pc)
 
     case next do
       {:halt} ->
         code
-
       {:beq, s, t, l} ->
         if l == label do
           code = put_elem(code, div(start_pc, 4), {:beq, s, t, pc + 4})
-          replace_labels(code, start_pc + 4, pc, label)
+          replace(code, start_pc + 4, pc, label)
         else
-          replace_labels(code, start_pc + 4, pc, label)
+          replace(code, start_pc + 4, pc, label)
         end
-
       _ ->
-        replace_labels(code, start_pc + 4, pc, label)
+        replace(code, start_pc + 4, pc, label)
     end
   end
 end
