@@ -39,14 +39,14 @@ defmodule Prime do
 
   def list2(num) do
     list = Enum.to_list(2..num)
-    [head | tail] = list
-    solution_two(tail, [head])
+    found = []
+    solution_two(list, found)
   end
 
   def list3(num) do
     list = Enum.to_list(2..num)
-    [head | tail] = list
-    Enum.reverse(solution_three(tail, [head]))
+    found = []
+    Enum.reverse(solution_three(list, found))
   end
 
   def solution_one(list) do
@@ -63,40 +63,23 @@ defmodule Prime do
     end
   end
 
-  def solution_two(list, found) do
-    [head | tail] = list
-    cond do
-      tail == [] ->
-        found
-      compare(head, found) != nil -> (
-        solution_two(tail, found ++ [head])
-        )
-      true ->
-        solution_two(tail, found)
+  def solution_two([], found) do found end
+
+  def solution_two([head | tail], found) do
+    if Enum.any?(found, fn(x) -> rem(head, x) == 0 end) do
+      solution_two(tail, found)
+    else
+      solution_two(tail, found ++ [head])
     end
   end
 
-  def solution_three(list, found) do
-    [head | tail] = list
-    cond do
-      tail == [] ->
-        found
-      compare(head, found) != nil -> (
-        solution_three(tail, [head | found])
-        )
-      true ->
-        solution_three(tail, found)
-    end
-  end
+  def solution_three([], found) do found end
 
-  def compare(x, found) do
-    [primtal | rest] = found
-    cond do
-      rest == [] ->
-        (if rem(x, primtal) != 0 do x end)
-      rem(x, primtal) != 0 -> (
-       compare(x, rest) )
-      true -> nil
+  def solution_three([head | tail], found) do
+    if Enum.any?(found, fn(x) -> rem(head, x) == 0 end) do
+      solution_three(tail, found)
+    else
+      solution_three(tail, [head | found])
     end
   end
 end
