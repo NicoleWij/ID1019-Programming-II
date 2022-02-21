@@ -9,16 +9,14 @@ defmodule SonarSweep do
     [199,200,208,210,200,207,240,269,260,263]
     end
 
-    def runOne() do 
+    def runOne() do
         [head | tail] = data()
         counter([head | tail], head, 0)
     end
 
     def runTwo() do
         everyList = Enum.chunk_every(data(), 3, 1, :discard)
-        IO.inspect(everyList)
         everyList = add(everyList)
-        IO.inspect(everyList)
         [head | tail] = everyList
         counter(everyList, head, 0)
     end
@@ -41,7 +39,7 @@ defmodule SonarSweep do
 
     def add([head | tail]) do
         head = Enum.sum(head)
-        
+
         case tail do
             [] ->
                 [head]
