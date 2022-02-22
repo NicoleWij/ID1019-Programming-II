@@ -33,14 +33,8 @@ defmodule Moves do
     end
   end
 
-  def move([], state) do state end
-
+  def move([], state) do [state] end
   def move([head | tail] , state) do
-    cond do
-      tail == [] ->
-        [state, single(head, state)]
-      true ->
-        [state | move(tail, single(head, state))]
-    end
+    [state | move(tail, single(head, state))]
   end
 end
