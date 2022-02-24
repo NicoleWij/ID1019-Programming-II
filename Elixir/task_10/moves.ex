@@ -3,33 +3,39 @@ defmodule Moves do
     {[:a,:b],[:c, :d],[:e, :f]}
   end
 
-  def single({track, steps},{main, one, two}) do
+  def single({:one, steps},{main, one, two}) do
     cond do
       steps > 0 ->
         l = length(main)
         new_main = ListMod.take(main, l-steps)
         move_train = ListMod.drop(main, l-steps)
-        case track do
-          :one -> {new_main,ListMod.append(move_train, one),two}
-          :two -> {new_main,one,ListMod.append(move_train, two)}
-        end
+        {new_main, ListMod.append(move_train, one), two}
       steps < 0 ->
-        case track do
-          :one ->
-            l = length(one)
-            move_train = ListMod.take(one, -steps)
-            new_main = ListMod.append(main, move_train)
-            new_one = ListMod.drop(one, -steps)
-            {new_main,new_one,two}
-          :two ->
-            l = length(two)
-            move_train = ListMod.take(two, -steps)
-            new_main = ListMod.append(main, move_train)
-            new_two = ListMod.drop(two, -steps)
-            {new_main,one,new_two}
-        end
+        l = length(one)
+        move_train = ListMod.take(one, -steps)
+        new_main = ListMod.append(main, move_train)
+        new_one = ListMod.drop(one, -steps)
+        {new_main, new_one, two}
       steps == 0 ->
-        {main,one,two}
+        {main, one, two}
+    end
+  end
+
+  def single({:two, steps},{main, one, two}) do
+    cond do
+      steps > 0 ->
+        l = length(main)
+        new_main = ListMod.take(main, l-steps)
+        move_train = ListMod.drop(main, l-steps)
+        {new_main, one, ListMod.append(move_train, two)}
+      steps < 0 ->
+        l = length(two)
+        move_train = ListMod.take(two, -steps)
+        new_main = ListMod.append(main, move_train)
+        new_two = ListMod.drop(two, -steps)
+        {new_main, one, new_two}
+      steps == 0 ->
+        {main, one, two}
     end
   end
 
