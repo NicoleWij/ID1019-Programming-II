@@ -90,7 +90,7 @@ defmodule Huffman do
       nil ->
         decode_char(seq, n+1, table)
       _ ->
-        {Map.get(table,code),rest}
+        {Map.get(table,code), rest}
     end
   end
 
